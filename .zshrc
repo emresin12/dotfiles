@@ -104,3 +104,10 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 bindkey -v
 
+# Restore Ctrl-n and Ctrl-p in insert mode for history navigation
+bindkey -M viins '^n' history-search-forward
+bindkey -M viins '^p' history-search-backward
+# Bind jj to escape in vi mode
+bindkey -M viins 'jj' vi-cmd-mode
+
+
