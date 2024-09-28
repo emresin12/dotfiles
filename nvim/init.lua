@@ -5,7 +5,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -173,10 +173,88 @@ require('lazy').setup({
       },
     },
   },
+  { 'tpope/vim-fugitive' },
+  { 'tpope/vim-commentary' },
   {
     'aserowy/tmux.nvim',
     config = function()
       return require('tmux').setup()
+    end,
+  },
+  {
+    'ray-x/lsp_signature.nvim',
+    event = 'VeryLazy',
+    opts = {
+      bind = true,
+      handler_opts = {
+        border = 'rounded',
+      },
+    },
+    config = function(_, opts)
+      require('lsp_signature').setup(opts)
+    end,
+  },
+  'nvim-tree/nvim-web-devicons',
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      local colors = {
+        blue = '#80a0ff',
+        cyan = '#79dac8',
+        black = '#080808',
+        white = '#c6c6c6',
+        red = '#ff5189',
+        violet = '#d183e8',
+        grey = '#303030',
+      }
+
+      local bubbles_theme = {
+        normal = {
+          a = { fg = colors.black, bg = colors.violet },
+          b = { fg = colors.white, bg = colors.grey },
+          c = { fg = colors.white },
+        },
+
+        insert = { a = { fg = colors.black, bg = colors.blue } },
+        visual = { a = { fg = colors.black, bg = colors.cyan } },
+        replace = { a = { fg = colors.black, bg = colors.red } },
+
+        inactive = {
+          a = { fg = colors.white, bg = colors.black },
+          b = { fg = colors.white, bg = colors.black },
+          c = { fg = colors.white },
+        },
+      }
+      require('lualine').setup {
+        options = {
+          theme = bubbles_theme,
+          component_separators = '',
+          section_separators = { left = '', right = '' },
+        },
+        sections = {
+          lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
+          lualine_b = { 'filename', 'branch' },
+          lualine_c = {
+            'diff',
+          },
+          lualine_x = {},
+          lualine_y = { 'diagnostics', 'filetype', 'progress' },
+          lualine_z = {
+            { 'location', separator = { right = '' }, left_padding = 2 },
+          },
+        },
+        inactive_sections = {
+          lualine_a = { 'filename' },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { 'location' },
+        },
+        tabline = {},
+        extensions = {},
+      }
     end,
   },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.ini
@@ -334,6 +412,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>gd', builtin.git_bcommits, { desc = ' search git commit with diffs' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -785,26 +864,25 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      ---- Simple and easy statusline.
+      ----  You could remove this setup call if you don't like it,
+      ----  and try some other statusline plugin
+      --local statusline = require 'mini.statusline'
+      ---- set use_icons to true if you have a Nerd Font
+      --statusline.setup { use_icons = vim.g.have_nerd_font }
 
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      ---- You can configure sections in the statusline by overriding their
+      ---- default behavior. For example, here we set the section for
+      ---- cursor location to LINE:COLUMN
+      -----@diagnostic disable-next-line: duplicate-set-field
+      --statusline.section_location = function()
+      --  return '%2l:%-2v'
+      --end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
-
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
@@ -896,10 +974,10 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
