@@ -102,6 +102,14 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+
+alias nerdai="cd /Users/emresin/Codeway/wonders/wonders-backend/homework/homework-cloud-functions-v2"
+alias notes="cd /Users/emresin/Documents/notes/"
+alias vnv="source .venv/bin/activate"
+alias cvnv="python3 -m venv .venv"
+
+
 bindkey -v
 
 # Restore Ctrl-n and Ctrl-p in insert mode for history navigation
@@ -111,3 +119,9 @@ bindkey -M viins '^p' history-search-backward
 bindkey -M viins 'jj' vi-cmd-mode
 
 
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/emresin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/emresin/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/emresin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/emresin/google-cloud-sdk/completion.zsh.inc'; fi

@@ -4,6 +4,7 @@ TERM = "xterm-256color"
 [shell]
 program = "/opt/homebrew/bin/tmux"
 
+# program = "/bin/zsh"
 [window]
 padding.x = 16
 padding.y = 14

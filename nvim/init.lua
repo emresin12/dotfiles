@@ -108,6 +108,20 @@ vim.keymap.set('i', 'jj', '<Esc>')
 vim.keymap.set('n', '<leader>h', '0')
 vim.keymap.set('n', '<leader>l', '$')
 
+vim.keymap.set('n', '<leader>ww', function()
+  -- Run the diff command first
+  vim.cmd ':w !git diff --no-index -- % -'
+
+  vim.cmd 'write'
+end, { silent = true })
+
+vim.keymap.set('n', '<leader>wq', function()
+  -- Run the diff command first
+  vim.cmd ':w !git diff --no-index -- % -'
+
+  vim.cmd 'confirm quit'
+end, { silent = true })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -234,7 +248,23 @@ require('lazy').setup({
         },
         sections = {
           lualine_a = { { 'mode', separator = { left = '' }, right_padding = 2 } },
-          lualine_b = { 'filename', 'branch' },
+          lualine_b = {
+            {
+              'filename',
+              {
+                function()
+                  local head = vim.b.gitsigns_head
+                  if vim.b.gitsigns_status_dict then
+                    -- Show the commit hash if in diff mode
+                    return 'Diffing against: ' .. (head or 'Working Tree')
+                  end
+                  return 'Commit: ' .. (head or 'N/A')
+                end,
+                icon = '', -- Git icon to indicate the file version
+              },
+              'branch',
+            },
+          },
           lualine_c = {
             'diff',
           },
@@ -412,7 +442,28 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>gd', builtin.git_bcommits, { desc = ' search git commit with diffs' })
+
+      -- Keymap for leader gd to show commit history and diff with the current buffer
+      vim.keymap.set('n', '<leader>gd', function()
+        require('telescope.builtin').git_commits {
+          attach_mappings = function(prompt_bufnr, map)
+            local actions = require 'telescope.actions'
+            local action_state = require 'telescope.actions.state'
+            local gitsigns = require 'gitsigns'
+
+            -- Select the commit and preview the diff without modifying the buffer
+            map('i', '<CR>', function()
+              local commit_hash = action_state.get_selected_entry().value
+              actions.close(prompt_bufnr)
+
+              -- Show the diff without changing the current buffer
+              vim.cmd('Gvdiffsplit ' .. commit_hash) -- Using fugitive's Gvdiffsplit
+            end)
+
+            return true
+          end,
+        }
+      end, { desc = 'View commit history and diff without modifying buffer' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
