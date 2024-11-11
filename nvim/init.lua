@@ -108,6 +108,9 @@ vim.keymap.set('i', 'jj', '<Esc>')
 vim.keymap.set('n', '<leader>h', '0')
 vim.keymap.set('n', '<leader>l', '$')
 
+vim.keymap.set('v', '<leader>h', '0')
+vim.keymap.set('v', '<leader>l', '$')
+
 vim.keymap.set('n', '<leader>ww', function()
   -- Run the diff command first
   vim.cmd ':w !git diff --no-index -- % -'
@@ -209,6 +212,20 @@ require('lazy').setup({
     end,
   },
   'nvim-tree/nvim-web-devicons',
+  {
+    'jay-babu/mason-null-ls.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'williamboman/mason.nvim',
+      'nvimtools/none-ls.nvim',
+    },
+    config = function()
+      require('mason-null-ls').setup {
+        ensure_installed = { 'black', 'pyright' },
+        automatic_installation = true,
+      }
+    end,
+  },
   {
     'nvim-lualine/lualine.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -445,19 +462,18 @@ require('lazy').setup({
 
       -- Keymap for leader gd to show commit history and diff with the current buffer
       vim.keymap.set('n', '<leader>gd', function()
-        require('telescope.builtin').git_commits {
+        require('telescope.builtin').git_bcommits {
           attach_mappings = function(prompt_bufnr, map)
             local actions = require 'telescope.actions'
             local action_state = require 'telescope.actions.state'
-            local gitsigns = require 'gitsigns'
 
             -- Select the commit and preview the diff without modifying the buffer
             map('i', '<CR>', function()
               local commit_hash = action_state.get_selected_entry().value
-              actions.close(prompt_bufnr)
+              actions.close(prompt_bufnr) -- Close the Telescope picker
 
-              -- Show the diff without changing the current buffer
-              vim.cmd('Gvdiffsplit ' .. commit_hash) -- Using fugitive's Gvdiffsplit
+              -- Open Fugitive diff view for the current file against the selected commit
+              vim.cmd('Gvdiffsplit ' .. commit_hash .. ':%')
             end)
 
             return true
@@ -468,10 +484,10 @@ require('lazy').setup({
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
+        builtin.current_buffer_fuzzy_find {
+          winblend = 0,
+          previewer = true,
+        }
       end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
@@ -669,6 +685,10 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         ts_ls = {},
+        black = {},
+        volar = {},
+        vuels = {},
+
         --
         lua_ls = {
           -- cmd = {...},
@@ -752,10 +772,10 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1031,7 +1051,7 @@ require('lazy').setup({
   require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
-  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
+  -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`init
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
@@ -1060,5 +1080,17 @@ require('lazy').setup({
   },
 })
 
+require('mason-null-ls').setup {
+  ensure_installed = { 'black' },
+  automatic_installation = true,
+}
+
+local null_ls = require 'null-ls'
+
+null_ls.setup {
+  sources = {
+    null_ls.builtins.formatting.black,
+  },
+}
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

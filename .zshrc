@@ -108,6 +108,7 @@ alias nerdai="cd /Users/emresin/Codeway/wonders/wonders-backend/homework/homewor
 alias notes="cd /Users/emresin/Documents/notes/"
 alias vnv="source .venv/bin/activate"
 alias cvnv="python3 -m venv .venv"
+alias netproj="cd /Users/emresin/Documents/network-projects/"
 
 
 bindkey -v
