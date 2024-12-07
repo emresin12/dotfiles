@@ -110,6 +110,14 @@ alias vnv="source .venv/bin/activate"
 alias cvnv="python3 -m venv .venv"
 alias netproj="cd /Users/emresin/Documents/network-projects/"
 
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
 
 bindkey -v
 
@@ -119,6 +127,7 @@ bindkey -M viins '^p' history-search-backward
 # Bind jj to escape in vi mode
 bindkey -M viins 'jj' vi-cmd-mode
 
+export EDITOR=nvim
 
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -126,3 +135,12 @@ if [ -f '/Users/emresin/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/emresin
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/emresin/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/emresin/google-cloud-sdk/completion.zsh.inc'; fi
+
+eval "$(zoxide init zsh)"
+
+FZF_CTRL_T_COMMAND= source <(fzf --zsh)
+
+export PATH=$HOME/development/flutter/bin:$PATH
+
+# Created by `pipx` on 2024-11-25 21:26:23
+export PATH="$PATH:/Users/emresin/.local/bin"
