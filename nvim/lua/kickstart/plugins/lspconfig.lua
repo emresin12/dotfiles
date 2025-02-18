@@ -158,10 +158,11 @@ return {
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        ts_ls = {},
         black = {},
         volar = {},
         vuels = {},
+        prettierd = {},
+        eslint_d = {},
 
         --
         lua_ls = {

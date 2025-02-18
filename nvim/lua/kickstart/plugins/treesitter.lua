@@ -55,13 +55,13 @@ return {
           set_jumps = true, -- Set jumps in the jumplist
           goto_next_start = {
             [']m'] = '@function.outer',
-            [']]'] = '@class.outer',
+            [']]'] = '@conditional.outer',
             [']o'] = '@loop.*',
             [']s'] = { query = '@local.scope', query_group = 'locals', desc = 'Next scope' },
           },
           goto_previous_start = {
             ['[m'] = '@function.outer',
-            ['[['] = '@class.outer',
+            ['[['] = '@conditional.outer',
             ['[s'] = { query = '@local.scope', query_group = 'locals', desc = 'Previous scope' },
           },
         },
@@ -100,6 +100,7 @@ return {
             'method',
           },
         },
+        zindex = 1,
         -- Add more settings here if needed
       }
     end,

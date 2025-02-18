@@ -3,9 +3,68 @@
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>q', function()
+  local winnr = vim.fn.getloclist(0, { winid = 0 }).winid
+  if winnr > 0 then
+    vim.cmd.lclose()
+  else
+    vim.diagnostic.setloclist()
+  end
+end, { desc = 'Toggle diagnostic list' })
 
+-- Quickfix toggle
+vim.keymap.set('n', '<leader>x', function()
+  local winnr = vim.fn.getqflist({ winid = 0 }).winid
+  if winnr > 0 then
+    vim.cmd.cclose()
+  else
+    vim.cmd.copen()
+  end
+end, { desc = 'Toggle quickfix window' })
 -- Quick Fix Operations
+--
+function TscCheck()
+  local cmd = 'tsc --noEmit'
+  local lines = vim.fn.systemlist(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    local qf_list = {}
+    for _, line in ipairs(lines) do
+      local file, row, col, msg = line:match '([^(]-)%((%d+),(%d+)%): (.+)'
+      if file then
+        table.insert(qf_list, {
+          filename = file,
+          lnum = tonumber(row),
+          col = tonumber(col),
+          text = msg,
+        })
+      end
+    end
+    vim.fn.setqflist(qf_list)
+    vim.cmd 'copen'
+  else
+    vim.notify('No TypeScript errors found', vim.log.levels.INFO)
+    vim.cmd 'cclose'
+  end
+end
+
+vim.api.nvim_create_user_command('TscCheck', TscCheck, {})
+
+vim.keymap.set('n', '<leader>tc', function()
+  TscCheck()
+end, { desc = 'TypeScript check' })
+
+-- Supermaven toggle
+vim.keymap.set('n', '<leader>sm', function()
+  local api = require 'supermaven-nvim.api'
+  api.toggle()
+  vim.notify('Supermaven toggled', vim.log.levels.INFO)
+end, { desc = 'Toggle Supermaven' })
+
+-- lsp_signature toggle keymap
+vim.keymap.set({ 'n' }, '<C-k>', function()
+  require('lsp_signature').toggle_float_win()
+end, { silent = true, noremap = true, desc = 'toggle signature' })
 
 -- Quickfix navigation
 vim.keymap.set('n', ']q', ':cnext<CR>', { desc = 'Next quickfix item' })
@@ -13,16 +72,13 @@ vim.keymap.set('n', '[q', ':cprevious<CR>', { desc = 'Previous quickfix item' })
 vim.keymap.set('n', ']Q', ':clast<CR>', { desc = 'Last quickfix item' })
 vim.keymap.set('n', '[Q', ':cfirst<CR>', { desc = 'First quickfix item' })
 
--- Quickfix window toggle
-vim.keymap.set('n', '<leader>qf', ':copen<CR>', { desc = 'Open quickfix window' })
-vim.keymap.set('n', '<leader>qc', ':cclose<CR>', { desc = 'Close quickfix window' })
-
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
@@ -47,6 +103,12 @@ vim.keymap.set('n', '<leader>l', '$')
 
 vim.keymap.set('v', '<leader>h', '0')
 vim.keymap.set('v', '<leader>l', '$')
+
+vim.keymap.set('n', '<leader>', function()
+  vim.cmd 'TSToolsOrganizeImports'
+  require('conform').format { async = false } -- Force synchronous formatting
+  vim.cmd 'w'
+end, { desc = 'Organize imports and save' })
 
 vim.keymap.set('n', '<leader>ww', function()
   -- Run the diff command first
