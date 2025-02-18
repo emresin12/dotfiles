@@ -81,12 +81,12 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+  export EDITOR='vim'
+else
+  export EDITOR='nvim'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -110,14 +110,6 @@ alias vnv="source .venv/bin/activate"
 alias cvnv="python3 -m venv .venv"
 alias netproj="cd /Users/emresin/Documents/network-projects/"
 
-function y() {
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
-	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-		builtin cd -- "$cwd"
-	fi
-	rm -f -- "$tmp"
-}
 
 bindkey -v
 
@@ -126,8 +118,6 @@ bindkey -M viins '^n' history-search-forward
 bindkey -M viins '^p' history-search-backward
 # Bind jj to escape in vi mode
 bindkey -M viins 'jj' vi-cmd-mode
-
-export EDITOR=nvim
 
 
 # The next line updates PATH for the Google Cloud SDK.
@@ -142,5 +132,3 @@ FZF_CTRL_T_COMMAND= source <(fzf --zsh)
 
 export PATH=$HOME/development/flutter/bin:$PATH
 
-# Created by `pipx` on 2024-11-25 21:26:23
-export PATH="$PATH:/Users/emresin/.local/bin"
