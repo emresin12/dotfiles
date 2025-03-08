@@ -1,0 +1,3 @@
+command = /opt/homebrew/bin/tmux new-session /opt/homebrew/bin/fish
+initial-command = /opt/homebrew/bin/tmux new-session -A -s main /opt/homebrew/bin/fish
+theme=gruvbox-material
