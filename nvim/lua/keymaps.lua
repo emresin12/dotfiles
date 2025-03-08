@@ -104,7 +104,7 @@ vim.keymap.set('n', '<leader>l', '$')
 vim.keymap.set('v', '<leader>h', '0')
 vim.keymap.set('v', '<leader>l', '$')
 
-vim.keymap.set('n', '<leader>', function()
+vim.keymap.set('n', '<leader>k', function()
   vim.cmd 'TSToolsOrganizeImports'
   require('conform').format { async = false } -- Force synchronous formatting
   vim.cmd 'w'

@@ -132,3 +132,6 @@ FZF_CTRL_T_COMMAND= source <(fzf --zsh)
 
 export PATH=$HOME/development/flutter/bin:$PATH
 
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/Users/emresin/.lmstudio/bin"
