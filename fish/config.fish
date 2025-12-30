@@ -21,8 +21,20 @@ if status is-interactive
 
     function gca
         git add .
-        git commit -m "$argv"
+        if test (count $argv) -eq 0
+            git commit -a
+            return 1
+        end
+        git commit -a -m "$argv"
     end
+    function gc
+        if test (count $argv) -eq 0
+            git commit -a
+            return 1
+        end
+        git commit -a -m "$argv"
+    end
+
  # Git extras
     function gd
         git diff $argv
@@ -106,3 +118,9 @@ set -x PATH $PATH $HOME/.pub-cache/bin
 
 # Added by LM Studio CLI (lms)
 set -gx PATH $PATH /Users/emresin/.lmstudio/bin
+
+# bun
+set --export BUN_INSTALL "$HOME/.bun"
+set --export PATH $BUN_INSTALL/bin $PATH
+
+alias claude="/Users/emresin/.claude/local/claude"

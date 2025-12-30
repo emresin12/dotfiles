@@ -135,3 +135,6 @@ export PATH=$HOME/development/flutter/bin:$PATH
 
 # Added by LM Studio CLI (lms)
 export PATH="$PATH:/Users/emresin/.lmstudio/bin"
+
+# Added by Antigravity
+export PATH="/Users/emresin/.antigravity/antigravity/bin:$PATH"

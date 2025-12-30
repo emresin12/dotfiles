@@ -24,7 +24,7 @@ end, { desc = 'Toggle quickfix window' })
 -- Quick Fix Operations
 --
 function TscCheck()
-  local cmd = 'tsc --noEmit'
+  local cmd = 'tsgo --noEmit'
   local lines = vim.fn.systemlist(cmd)
 
   if vim.v.shell_error ~= 0 then
