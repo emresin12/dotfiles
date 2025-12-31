@@ -23,12 +23,6 @@ require('lazy').setup({
   -- modular approach: using `require 'path/name'` will
   -- include a plugin definition from file lua/path/name.lua
 
-  'jose-elias-alvarez/null-ls.nvim',
-
-  'tpope/vim-fugitive',
-
-  'tpope/vim-commentary',
-
   require 'kickstart/plugins/gitsigns',
 
   require 'kickstart/plugins/which-key',
@@ -38,8 +32,6 @@ require('lazy').setup({
   require 'kickstart/plugins/lspconfig',
 
   require 'kickstart/plugins/conform',
-
-  require 'kickstart/plugins/cmp',
 
   require 'kickstart/plugins/tokyonight',
 

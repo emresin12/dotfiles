@@ -1,12 +1,13 @@
 return {
   {
-    'github/copilot.vim',
-    lazy = false, -- Load the plugin immediately, not lazily
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
     config = function()
-      -- Explicitly set variables that might help initialize the status
-      vim.g.copilot_no_maps = false
-      vim.g.copilot_assume_mapped = false
-      vim.g.copilot_tab_fallback = ''
+      require('copilot').setup {
+        suggestion = { enabled = true },
+        panel = { enabled = true },
+      }
     end,
   },
 }
