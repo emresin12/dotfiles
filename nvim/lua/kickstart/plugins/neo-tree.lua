@@ -10,10 +10,11 @@ return {
     'MunifTanjim/nui.nvim',
   },
   cmd = 'Neotree',
+  event = 'BufEnter',
   keys = {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
-  lazy = false,
+  -- lazy = false,
   opts = function(_, opts)
     local function on_move(data)
       Snacks.rename.on_rename_file(data.source, data.destination)
@@ -25,8 +26,8 @@ return {
       { event = events.FILE_RENAMED, handler = on_move },
     })
     opts.filesystem = {
-      -- hijack_netrw_behavior = 'open_default',
-      -- use_libuv_file_watcher = true,
+      hijack_netrw_behavior = 'open_default',
+      use_libuv_file_watcher = true,
       window = {
         mappings = {
           ['\\'] = 'close_window',

@@ -75,7 +75,26 @@ return {
       {
         '<leader>ss',
         function()
-          Snacks.picker.lsp_workspace_symbols()
+          Snacks.picker.lsp_workspace_symbols {
+            filter = {
+              typescript = {
+                'Class',
+                'Constructor',
+                'Enum',
+                'Field',
+                'Function',
+                'Interface',
+                'Method',
+                'Module',
+                'Namespace',
+                'Package',
+                'Property',
+                'Struct',
+                'Trait',
+                'Variable', -- This is the one that shows your exported variables
+              },
+            },
+          }
         end,
         desc = '[S]earch Workspace [S]ymbols',
       },
@@ -133,7 +152,9 @@ return {
       {
         '<leader>gf',
         function()
-          Snacks.picker.git_log_file()
+          Snacks.picker.git_log_file {
+            confirm = 'git_show',
+          }
         end,
         desc = 'Git log for current file',
       },

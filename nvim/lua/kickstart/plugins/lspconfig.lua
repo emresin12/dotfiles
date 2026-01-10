@@ -1,3 +1,4 @@
+local handlers = require 'vim.lsp.handlers'
 return {
   {
     -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
@@ -16,6 +17,7 @@ return {
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    event = 'VeryLazy',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -50,40 +52,54 @@ return {
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('gn', vim.lsp.buf.rename, '[R]e[n]ame')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+          map('<leader>ca', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
           -- Find references for the word under your cursor.
-          map('grr', function() Snacks.picker.lsp_references() end, '[G]oto [R]eferences')
+          map('gr', function()
+            Snacks.picker.lsp_references()
+          end, '[G]oto [R]eferences')
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gri', function() Snacks.picker.lsp_implementations() end, '[G]oto [I]mplementation')
+          map('gi', function()
+            Snacks.picker.lsp_implementations()
+          end, '[G]oto [I]mplementation')
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
-          map('grd', function() Snacks.picker.lsp_definitions() end, '[G]oto [D]efinition')
+          map('gd', function()
+            Snacks.picker.lsp_definitions()
+          end, '[G]oto [D]efinition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
-          map('grD', function() Snacks.picker.lsp_declarations() end, '[G]oto [D]eclaration')
+          map('gD', function()
+            Snacks.picker.lsp_declarations()
+          end, '[G]oto [D]eclaration')
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('gO', function() Snacks.picker.lsp_symbols() end, 'Open Document Symbols')
+          map('gO', function()
+            Snacks.picker.lsp_symbols()
+          end, 'Open Document Symbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('gW', function() Snacks.picker.lsp_workspace_symbols() end, 'Open Workspace Symbols')
+          map('gW', function()
+            Snacks.picker.lsp_workspace_symbols()
+          end, 'Open Workspace Symbols')
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
           --  the definition of its *type*, not where it was *defined*.
-          map('grt', function() Snacks.picker.lsp_type_definitions() end, '[G]oto [T]ype Definition')
+          map('gt', function()
+            Snacks.picker.lsp_type_definitions()
+          end, '[G]oto [T]ype Definition')
 
           -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
@@ -138,7 +154,9 @@ return {
           end
 
           if client and client_supports_method(client, 'callHierarchy/incomingCalls', event.buf) then
-            map('gic', function() Snacks.picker.lsp_incoming_calls() end, '[G]oto [I]ncoming [C]all ')
+            map('gic', function()
+              Snacks.picker.lsp_incoming_calls()
+            end, '[G]oto [I]ncoming [C]all ')
           end
         end,
       })

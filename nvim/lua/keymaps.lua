@@ -2,7 +2,12 @@
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
+vim.diagnostic.config {
+  loclist = {
+    source = true,
+  },
+}
+-- -- Diagnostic keymaps
 vim.keymap.set('n', '<leader>q', function()
   local winnr = vim.fn.getloclist(0, { winid = 0 }).winid
   if winnr > 0 then
@@ -11,6 +16,25 @@ vim.keymap.set('n', '<leader>q', function()
     vim.diagnostic.setloclist()
   end
 end, { desc = 'Toggle diagnostic list' })
+
+-- Diagnostic keymaps
+-- vim.keymap.set('n', '<leader>q', function()
+--   local winnr = vim.fn.getloclist(0, { winid = 0 }).winid
+--   if winnr > 0 then
+--     vim.cmd.lclose()
+--   else
+--     -- Pass a format function to include the source
+--     vim.diagnostic.setloclist {
+--       format = function(diagnostic)
+--         vim.notify(diagnostic.source)
+--         if diagnostic.source then
+--           return string.format('[%s] %s', diagnostic.source, diagnostic.message)
+--         end
+--         return diagnostic.message
+--       end,
+--     }
+--   end
+-- end, { desc = 'Toggle diagnostic list with source' })
 
 -- Quickfix toggle
 vim.keymap.set('n', '<leader>x', function()
@@ -110,18 +134,15 @@ vim.keymap.set('n', '<leader>k', function()
   vim.cmd 'w'
 end, { desc = 'Organize imports and save' })
 
-vim.keymap.set('n', '<leader>ww', function()
-  -- Run the diff command first
-  vim.cmd ':w !git diff --no-index -- % -'
-
+vim.keymap.set('n', '<leader>w', function()
   vim.cmd 'write'
 end, { silent = true })
 
-vim.keymap.set('n', '<leader>wq', function()
-  -- Run the diff command first
-  vim.cmd ':w !git diff --no-index -- % -'
-
-  vim.cmd 'confirm quit'
+vim.keymap.set('n', '<leader>e', function()
+  local choice = vim.fn.confirm('Discard all changes and quit?', '&Yes\n&No', 2)
+  if choice == 1 then
+    vim.cmd 'qa!'
+  end
 end, { silent = true })
 
 -- [[ Basic Autocommands ]]

@@ -12,6 +12,20 @@ return {
         mode = '',
         desc = '[F]ormat buffer',
       },
+      {
+        '<leader>b',
+        function()
+          local clients = vim.lsp.get_active_clients { name = 'biome' }
+          if #clients > 0 then
+            vim.lsp.buf.code_action {
+              context = { only = { 'source.fixAll.biome' } },
+              apply = true,
+            }
+          end
+        end,
+        mode = '',
+        desc = 'Biome fix all',
+      },
     },
     opts = {
       notify_on_error = false,
@@ -37,8 +51,8 @@ return {
         python = { 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        javascript = { 'prettierd', 'prettier', stop_after_first = true },
-        typescript = { 'prettierd', 'prettier', stop_after_first = true }, -- Add this line
+        javascript = { 'prettierd', 'prettier', 'biome', stop_after_first = true },
+        typescript = { 'biome', 'prettierd', 'prettier', stop_after_first = true }, -- Add this line
       },
     },
   },
