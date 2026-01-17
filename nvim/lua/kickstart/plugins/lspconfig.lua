@@ -92,17 +92,12 @@ return {
             Snacks.picker.lsp_type_definitions()
           end, '[G]oto [T]ype Definition')
 
-          -- This function resolves a difference between neovim nightly (version 0.11) and stable (version 0.10)
           ---@param client vim.lsp.Client
           ---@param method vim.lsp.protocol.Method
           ---@param bufnr? integer some lsp support methods only in specific files
           ---@return boolean
           local function client_supports_method(client, method, bufnr)
-            if vim.fn.has 'nvim-0.11' == 1 then
-              return client:supports_method(method, bufnr)
-            else
-              return client.supports_method(method, { bufnr = bufnr })
-            end
+            return client:supports_method(method, bufnr)
           end
 
           -- The following two autocommands are used to highlight references of the
@@ -181,45 +176,32 @@ return {
         },
       }
 
-      -- LSP servers and clients are able to communicate to each other what features they support.
-      --  By default, Neovim doesn't support everything that is in the LSP specification.
-      --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
-      --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
-      local capabilities = require('blink.cmp').get_lsp_capabilities()
+      -- Neovim 0.11+ native LSP configuration
+      -- Servers must be installed on your system via package manager
+      -- See :help vim.lsp.config and :help vim.lsp.enable
 
-      -- LSP servers configuration
-      -- These servers must be installed on your system via package manager
-      -- Available keys: cmd, filetypes, capabilities, settings
-      -- See :help lspconfig-all for all pre-configured LSPs
-      local servers = {
-        -- Rust: install via rustup or package manager
-        rust_analyzer = {},
+      -- Set capabilities for all LSP servers (blink.cmp provides enhanced completion)
+      vim.lsp.config('*', {
+        capabilities = require('blink.cmp').get_lsp_capabilities(),
+      })
 
-        -- Go: go install golang.org/x/tools/gopls@latest
-        gopls = {},
-
-        -- TypeScript: npm install -g typescript-language-server typescript
-        -- Or for tsgo: install the tsgo binary
-        ts_ls = {},
-
-        -- Lua: brew install lua-language-server
-        lua_ls = {
-          settings = {
-            Lua = {
-              completion = {
-                callSnippet = 'Replace',
-              },
+      -- Server-specific configuration
+      vim.lsp.config('lua_ls', {
+        settings = {
+          Lua = {
+            completion = {
+              callSnippet = 'Replace',
             },
           },
         },
-      }
+      })
 
-      -- Setup all LSP servers
-      -- Servers must be installed on your system (brew, apt, cargo, npm, go install, etc.)
-      for server_name, server_config in pairs(servers) do
-        server_config.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server_config.capabilities or {})
-        require('lspconfig')[server_name].setup(server_config)
-      end
+      -- Enable LSP servers (must be installed on your system)
+      -- rust_analyzer: rustup component add rust-analyzer
+      -- gopls: go install golang.org/x/tools/gopls@latest
+      -- ts_ls: npm install -g typescript-language-server typescript
+      -- lua_ls: brew install lua-language-server
+      vim.lsp.enable({ 'rust_analyzer', 'gopls', 'ts_ls', 'lua_ls' })
 
     end,
   },
