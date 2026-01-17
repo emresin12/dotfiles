@@ -247,6 +247,16 @@ return {
       --
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
+      --
+do
+  local server = servers.rust_analyzer or {}
+  server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+  server.cmd = { "rust-analyzer" }
+  require('lspconfig').rust_analyzer.setup(server)
+end
+
+      
+
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua',
