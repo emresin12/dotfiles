@@ -201,7 +201,7 @@ return {
       -- gopls: go install golang.org/x/tools/gopls@latest
       -- ts_ls: npm install -g typescript-language-server typescript
       -- lua_ls: brew install lua-language-server
-      vim.lsp.enable { 'rust_analyzer', 'gopls', 'ts_ls', 'lua_ls', 'nil_ls' }
+      vim.lsp.enable { 'rust_analyzer', 'gopls', 'ts_ls', 'lua_ls', 'nixd' }
     end,
   },
 }
