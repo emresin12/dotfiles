@@ -196,6 +196,25 @@ return {
         },
       })
 
+      -- nixd configuration (Nix language server)
+      vim.lsp.config('nixd', {
+        settings = {
+          nixd = {
+            nixpkgs = {
+              expr = 'import <nixpkgs> { }',
+            },
+            formatting = {
+              command = { 'nixfmt' },
+            },
+            options = {
+              home_manager = {
+                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations.linux.options',
+              },
+            },
+          },
+        },
+      })
+
       -- Enable LSP servers (must be installed on your system)
       -- rust_analyzer: rustup component add rust-analyzer
       -- gopls: go install golang.org/x/tools/gopls@latest
