@@ -129,7 +129,10 @@ vim.keymap.set('v', '<leader>h', '0')
 vim.keymap.set('v', '<leader>l', '$')
 
 vim.keymap.set('n', '<leader>k', function()
-  vim.cmd 'TSToolsOrganizeImports'
+  vim.lsp.buf.code_action {
+    context = { only = { 'source.organizeImports' }, diagnostics = {} },
+    apply = true,
+  }
   require('conform').format { async = false } -- Force synchronous formatting
   vim.cmd 'w'
 end, { desc = 'Organize imports and save' })

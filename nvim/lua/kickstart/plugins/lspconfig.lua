@@ -208,19 +208,17 @@ return {
             },
             options = {
               home_manager = {
-                expr = '(builtins.getFlake ("git+file://" + toString ./.)).homeConfigurations.linux.options',
+                expr = '(builtins.getFlake "/home/emres/nix-home-manager").homeConfigurations.linux.options',
               },
             },
           },
         },
       })
 
-      -- Enable LSP servers (must be installed on your system)
-      -- rust_analyzer: rustup component add rust-analyzer
-      -- gopls: go install golang.org/x/tools/gopls@latest
-      -- ts_ls: npm install -g typescript-language-server typescript
-      -- lua_ls: brew install lua-language-server
-      vim.lsp.enable { 'rust_analyzer', 'gopls', 'ts_ls', 'lua_ls', 'nixd' }
+      -- Enable LSP servers (must be installed on your system via Nix or package manager)
+      -- rust_analyzer, gopls, nixd, lua_ls: installed via home-manager (dev.nix)
+      -- tsgo: installed via home-manager (typescript-go in dev.nix)
+      vim.lsp.enable { 'rust_analyzer', 'gopls', 'tsgo', 'lua_ls', 'nixd' }
     end,
   },
 }
